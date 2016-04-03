@@ -18,11 +18,9 @@ defmodule OpenStax.Swift.AuthAgent do
   Registers new backend.
   """
   def register(backend_id) do
-    Agent.get(@process_id, fn
-      Agent.update(@process_id, fn(state) ->
-        %{state | backend_id => %{auth_token: nil, endpoint_url: nil}}
-       end)
-    end)
+    Agent.update(@process_id, fn(state) ->
+      %{state | backend_id => %{auth_token: nil, endpoint_url: nil}}
+     end)
   end
 
 
