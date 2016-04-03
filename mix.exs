@@ -16,7 +16,7 @@ defmodule OpenStax.Swift.Mixfile do
 
 
   def application do
-    [applications: [:logger, :httpoison],
+    [applications: [:crypto, :httpoison],
      mod: {OpenStax.Swift, []}]
   end
 
