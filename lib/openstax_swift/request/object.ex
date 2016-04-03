@@ -38,7 +38,7 @@ defmodule Object do
     query = nil
     if copy_manifest, do: query = %{"multipart-manifest" => "copy"}
 
-    OpenStax.Swift.Request.request(backend_id, :copy, [container, object], [201], %{
+    OpenStax.Swift.Request.request(backend_id, :copy, [source_container, source_object], [201], %{
       headers: [{"Destination", "#{destination_container}/#{destination_object}"}],
       query: query
     })
