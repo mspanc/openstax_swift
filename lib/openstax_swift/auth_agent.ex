@@ -3,14 +3,11 @@ defmodule OpenStax.Swift.AuthAgent do
     This module is responsible for storing configuration of Swift backends.
   """
 
-  @process_id OpenStax.Swift.AuthAgent
-
-
   @doc """
   Starts a new agent for storing configuration.
   """
-  def start_link() do
-    Agent.start_link(fn -> %{} end, [name: @process_id])
+  def start_link(opts \\ []) do
+    Agent.start_link(fn -> %{} end, opts)
   end
 
 
@@ -18,7 +15,7 @@ defmodule OpenStax.Swift.AuthAgent do
   Registers new backend.
   """
   def register(backend_id) do
-    Agent.update(@process_id, fn(state) ->
+    Agent.update(OpenStax.Swift.AuthAgent, fn(state) ->
       %{state | backend_id => %{auth_token: nil, endpoint_url: nil}}
      end)
   end
@@ -28,7 +25,7 @@ defmodule OpenStax.Swift.AuthAgent do
   Returns current access token for a backend.
   """
   def get_config(backend_id) do
-    Agent.get(@process_id, fn(state) ->
+    Agent.get(OpenStax.Swift.AuthAgent, fn(state) ->
       state[backend_id]
     end)
   end
@@ -38,7 +35,7 @@ defmodule OpenStax.Swift.AuthAgent do
   Sets current configuration for a backend.
   """
   def set_config(backend_id, auth_token, endpoint_url) do
-    Agent.update(@process_id, fn(state) ->
+    Agent.update(OpenStax.Swift.AuthAgent, fn(state) ->
       %{state | backend_id => %{auth_token: auth_token, endpoint_url: endpoint_url}}
     end)
   end
