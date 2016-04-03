@@ -4,7 +4,8 @@ defmodule Object do
   when it comes to object handling.
   """
 
-  import OpenStax.Swift.Request, only: [request: 5]
+  import OpenStax.Swift.Request
+
 
   @doc """
   Downloads the object content and gets the object metadata.
