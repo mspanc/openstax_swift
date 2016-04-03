@@ -53,7 +53,7 @@ defmodule Object do
   """
   def delete(backend_id, container, object, delete_manifest \\ false) do
     query = nil
-    if delete_manifest, do: query = %{"multipart-manifest" => "delete"}]
+    if delete_manifest, do: query = %{"multipart-manifest" => "delete"}
 
     request(backend_id, :delete, [container, object], [204], %{
       query: query
@@ -96,7 +96,7 @@ defmodule Object do
     request(backend_id, :put, [container, object], [201], %{
       body: Poison.Encoder.encode(segments),
       metadata: metadata,
-      query: %{"multipart-manifest" => "put"}]
+      query: %{"multipart-manifest" => "put"}
     })
   end
 
