@@ -16,8 +16,8 @@ defmodule OpenStax.Swift.AuthAgent do
   """
   def register(backend_id) do
     Agent.update(OpenStax.Swift.AuthAgent, fn(state) ->
-      %{state | backend_id => %{auth_token: nil, endpoint_url: nil}}
-     end)
+      Map.put(state, :backend_id, %{auth_token: nil, endpoint_url: nil})
+    end)
   end
 
 
@@ -26,7 +26,7 @@ defmodule OpenStax.Swift.AuthAgent do
   """
   def get_config(backend_id) do
     Agent.get(OpenStax.Swift.AuthAgent, fn(state) ->
-      state[backend_id]
+      Map.get(state, backend_id)
     end)
   end
 
@@ -36,7 +36,7 @@ defmodule OpenStax.Swift.AuthAgent do
   """
   def set_config(backend_id, auth_token, endpoint_url) do
     Agent.update(OpenStax.Swift.AuthAgent, fn(state) ->
-      %{state | backend_id => %{auth_token: auth_token, endpoint_url: endpoint_url}}
+      Map.put(state, :backend_id, %{auth_token: auth_token, endpoint_url: endpoint_url})
     end)
   end
 end
