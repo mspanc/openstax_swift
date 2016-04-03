@@ -93,7 +93,7 @@ defmodule Object do
   """
   def create_slo_manifest(backend_id, container, object, segments, metadata \\ nil) do
     OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], %{
-      body: Poison.Encoder.encode(segments),
+      body: Poison.encode!(segments),
       metadata: metadata,
       query: %{"multipart-manifest" => "put"}
     })
