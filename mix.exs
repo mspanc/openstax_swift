@@ -33,7 +33,7 @@ defmodule OpenStax.Swift.Mixfile do
   defp deps(:test_dev) do
     [
       {:httpoison, "~> 0.8.2"},
-      {:espec, "~> 0.8.7", only: :test}
+      {:espec, "~> 0.8.17", only: :test}
     ]
   end
 
