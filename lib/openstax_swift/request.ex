@@ -1,4 +1,6 @@
 defmodule OpenStax.Swift.Request do
+  require OpenStax.Swift
+
   @request_headers [
     {"Connection",    "Close"},
     {"Cache-Control", "no-cache, must-revalidate"},
@@ -33,10 +35,10 @@ defmodule OpenStax.Swift.Request do
 
                 case HTTPoison.request(method, location_full, body, headers_full, @request_options) do
                   {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
-                    case 401 do
-                      {:error, {:auth, :unauthorized}}
-
                     case status_code do
+                      401 ->
+                        {:error, {:auth, :unauthorized}}
+
                       expected_status_code ->
                         {:ok, status_code, body} # TODO parse body
 
