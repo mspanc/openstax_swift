@@ -4,8 +4,6 @@ defmodule Account do
   when it comes to account handling.
   """
 
-  import OpenStax.Swift.Request
-
 
   @doc """
   Creates, updates, or deletes account metadata.
@@ -13,7 +11,7 @@ defmodule Account do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#updateAccountMeta
   """
   def create(backend_id, metadata \\ nil) do
-    request(backend_id, :post, [], [200], %{
+    OpenStax.Swift.Request.request(backend_id, :post, [], [200], %{
       metadata: metadata
     })
   end
@@ -25,7 +23,7 @@ defmodule Account do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#showAccountDetails
   """
   def read(backend_id) do
-    request(backend_id, :get, [], [204])
+    OpenStax.Swift.Request.request(backend_id, :get, [], [204])
     # TODO parse response
   end
 end

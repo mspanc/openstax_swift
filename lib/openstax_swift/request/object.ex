@@ -4,8 +4,6 @@ defmodule Object do
   when it comes to object handling.
   """
 
-  import OpenStax.Swift.Request
-
 
   @doc """
   Downloads the object content and gets the object metadata.
@@ -13,7 +11,7 @@ defmodule Object do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#showObject
   """
   def read(backend_id, container, object) do
-    request(backend_id, :get, [container, object], [200])
+    OpenStax.Swift.Request.request(backend_id, :get, [container, object], [200])
     # TODO parse content
   end
 
@@ -25,7 +23,7 @@ defmodule Object do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#showObject
   """
   def create(backend_id, container, object, body, metadata \\ nil) do
-    request(backend_id, :put, [container, object], [201], %{
+    OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], %{
       body: body, metadata: metadata
     })
   end
@@ -40,7 +38,7 @@ defmodule Object do
     query = nil
     if delete_manifest, do: query = %{"multipart-manifest" => "copy"}
 
-    request(backend_id, :copy, [container, object], [201], %{
+    OpenStax.Swift.Request.request(backend_id, :copy, [container, object], [201], %{
       headers: [{"Destination", "#{destination_container}/#{destination_object}"}],
       query: query
     })
@@ -56,7 +54,7 @@ defmodule Object do
     query = nil
     if delete_manifest, do: query = %{"multipart-manifest" => "delete"}
 
-    request(backend_id, :delete, [container, object], [204], %{
+    OpenStax.Swift.Request.request(backend_id, :delete, [container, object], [204], %{
       query: query
     })
   end
@@ -68,7 +66,7 @@ defmodule Object do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#showObjectMeta
   """
   def get_meta(backend_id, container, object) do
-    request(backend_id, :head, [container, object], [200])
+    OpenStax.Swift.Request.request(backend_id, :head, [container, object], [200])
     # TODO parse response
   end
 
@@ -79,7 +77,7 @@ defmodule Object do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#updateObjectMeta
   """
   def set_meta(backend_id, container, object, metadata \\ nil) do
-    request(backend_id, :post, [container, object], [202], %{
+    OpenStax.Swift.Request.request(backend_id, :post, [container, object], [202], %{
       metadata: metadata
     })
   end
@@ -94,7 +92,7 @@ defmodule Object do
   See http://docs.openstack.org/developer/swift/api/large_objects.html#static-large-objects
   """
   def create_slo_manifest(backend_id, container, object, segments, metadata \\ nil) do
-    request(backend_id, :put, [container, object], [201], %{
+    OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], %{
       body: Poison.Encoder.encode(segments),
       metadata: metadata,
       query: %{"multipart-manifest" => "put"}
@@ -108,7 +106,7 @@ defmodule Object do
   See http://docs.openstack.org/developer/swift/api/large_objects.html#dynamic-large-objects
   """
   def create_dlo_manifest(backend_id, container, object, segments_container, segments_object_prefix) do
-    request(backend_id, :put, [container, object], [201], %{
+    OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], %{
       headers: [{"X-Object-Manifest", "#{segments_container}/#{segments_object_prefix}"}]
     })
   end

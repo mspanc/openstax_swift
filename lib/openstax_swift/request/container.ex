@@ -1,10 +1,8 @@
 defmodule Container do
   @moduledoc """
-  This module is responsible for wrapping HTTP requests sent to Swift
+  This module is responsible for wrapping HTTP OpenStax.Swift.Request.requests sent to Swift
   when it comes to container handling.
   """
-
-  import OpenStax.Swift.Request
 
 
   @doc """
@@ -13,7 +11,7 @@ defmodule Container do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#showContainerDetails
   """
   def read(backend_id, container) do
-    request(backend_id, :get, [container], [200, 204])
+    OpenStax.Swift.Request.request(backend_id, :get, [container], [200, 204])
     # TODO parse response
   end
 
@@ -24,7 +22,7 @@ defmodule Container do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#createContainer
   """
   def create(backend_id, container, metadata \\ nil) do
-    request(backend_id, :put, [container], [201], %{
+    OpenStax.Swift.Request.request(backend_id, :put, [container], [201], %{
       metadata: metadata
     })
   end
@@ -36,7 +34,7 @@ defmodule Container do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#deleteContainer
   """
   def delete(backend_id, container) do
-    request(backend_id, :delete, [container], [204])
+    OpenStax.Swift.Request.request(backend_id, :delete, [container], [204])
   end
 
 
@@ -46,7 +44,7 @@ defmodule Container do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#updateContainerMeta
   """
   def set_meta(backend_id, container, metadata \\ nil) do
-    request(backend_id, :post, [container], [204], %{
+    OpenStax.Swift.Request.request(backend_id, :post, [container], [204], %{
       metadata: metadata
     })
   end
@@ -59,7 +57,7 @@ defmodule Container do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#showContainerMeta
   """
   def get_meta(backend_id, container) do
-    request(backend_id, :head, [container], [204])
+    OpenStax.Swift.Request.request(backend_id, :head, [container], [204])
     # TODO parse response
   end
 end
