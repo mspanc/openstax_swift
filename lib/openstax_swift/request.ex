@@ -14,35 +14,40 @@ defmodule OpenStax.Swift.Request do
         {:error, {:config, :invalid_backend}}
 
       %{auth_token: auth_token, endpoint_url: endpoint_url} ->
-        case auth_token do
+        case endpoint_url do
           nil ->
-            {:error, {:auth, :unauthorized}}
+            {:error, {:auth, :invalid_endpoint}}
 
-          _ ->
-            headers_full = @request_headers ++ [{"X-Auth-Token", auth_token}]
-            location_full = endpoint_url <> "/" <> String.join(path, "/")
+          case auth_token do
+            nil ->
+              {:error, {:auth, :unauthorized}}
 
-            if headers  != nil, do: headers_full = headers_full ++ headers
-            if metadata != nil, do: headers_full = headers_full ++ metadata # FIXME prefix X-Meta-...
-            if query    != nil, do: location_full = location_full <> "?" <> URI.encode_query(query)
+            _ ->
+              headers_full = @request_headers ++ [{"X-Auth-Token", auth_token}]
+              location_full = endpoint_url <> "/" <> String.join(path, "/")
 
-            case HTTPoison.request(method, location_full, body, headers_full, @request_options) do
-              {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
-                case 401 do
-                  {:error, {:auth, :unauthorized}}
+              if headers  != nil, do: headers_full = headers_full ++ headers
+              if metadata != nil, do: headers_full = headers_full ++ metadata # FIXME prefix X-Meta-...
+              if query    != nil, do: location_full = location_full <> "?" <> URI.encode_query(query)
 
-                case status_code do
-                  expected_status_code ->
-                    {:ok, status_code, body} # TODO parse body
+              case HTTPoison.request(method, location_full, body, headers_full, @request_options) do
+                {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
+                  case 401 do
+                    {:error, {:auth, :unauthorized}}
 
-                  _ ->
-                    {:error, {:httpcode, status_code}}
-                end
+                  case status_code do
+                    expected_status_code ->
+                      {:ok, status_code, body} # TODO parse body
 
-              {:error, reason} ->
-                {:error, {:httperror, reason}}
-            end
-        end
+                    _ ->
+                      {:error, {:httpcode, status_code}}
+                  end
+
+                {:error, reason} ->
+                  {:error, {:httperror, reason}}
+              end
+          end
+      end
     end
   end
 end
