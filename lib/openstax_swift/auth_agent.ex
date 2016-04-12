@@ -14,9 +14,9 @@ defmodule OpenStax.Swift.AuthAgent do
   @doc """
   Registers new backend.
   """
-  def register(backend_id) do
+  def register(backend_id, auth_token \\ nil, endpoint_url \\ nil) do
     Agent.update(OpenStax.Swift.AuthAgent, fn(state) ->
-      Map.put(state, :backend_id, %{auth_token: nil, endpoint_url: nil})
+      Map.put(state, :backend_id, %{auth_token: auth_token, endpoint_url: endpoint_url})
     end)
   end
 
