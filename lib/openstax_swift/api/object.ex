@@ -20,12 +20,22 @@ defmodule OpenStax.Swift.API.Object do
   Creates an object with data content and metadata, or replaces an existing
   object with data content and metadata.
 
+  On success it returns `{:ok, %{etag: "md5 hash of contents"}}`.
+
+  On error it returns `{:error, reason}`.
+
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#createOrReplaceObject
   """
   def create(backend_id, container, object, body, metadata \\ nil) do
-    OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], [
-      body: body, metadata: metadata
-    ])
+    case OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], [ body: body, metadata: metadata ]) do
+      {:ok, code, headers, body} ->
+        {"Etag", etag} = List.keyfind(headers, "Etag", 0)
+
+        {:ok, %{ etag: etag }}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
   end
 
 
