@@ -31,13 +31,19 @@ defmodule OpenStax.Swift.Request do
                 if options[:metadata] != nil, do: headers_full = headers_full ++ options[:metadata] # FIXME prefix X-Meta-...
                 if options[:query]    != nil, do: location_full = location_full <> "?" <> URI.encode_query(options[:query])
 
-                case HTTPoison.request(method, location_full, options[:body], headers_full, @request_options) do
+                if options[:body] != nil do
+                   body_full = options[:body]
+                else
+                  body_full = ""
+                end
+
+                case HTTPoison.request(method, location_full, body_full, headers_full, @request_options) do
                   {:ok, %HTTPoison.Response{status_code: status_code, body: body, headers: headers}} ->
                     case status_code do
                       401 ->
                         {:error, {:auth, :unauthorized}}
 
-                      expected_status_code ->
+                      expected_status_code -> # FIXME check does not work
                         {:ok, status_code, headers, body}
 
                       _ ->
