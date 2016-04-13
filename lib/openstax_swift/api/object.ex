@@ -97,13 +97,13 @@ defmodule OpenStax.Swift.API.Object do
   Creates or updates Static Large Object manifest.
 
   You have to pass information about segments that is a list of tuples
-  `{container/object, etag, size_bytes}`.
+  `{container/object, etag, size_bytes}` in order that will compose the object.
 
   See http://docs.openstack.org/developer/swift/api/large_objects.html#static-large-objects
   """
   def create_slo_manifest(backend_id, container, object, segments, metadata \\ nil) do
     OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], [
-      body: Poison.encode!(segments),
+      body: Poison.encode!(Enum.map(segments, fn({path, etag, size_bytes}) -> %{path: path, etag: etag, size_bytes: size_bytes} end)),
       metadata: metadata,
       query: %{"multipart-manifest" => "put"}
     ])
