@@ -116,8 +116,16 @@ defmodule OpenStax.Swift.API.Object do
   See http://docs.openstack.org/developer/swift/api/large_objects.html#dynamic-large-objects
   """
   def create_dlo_manifest(backend_id, container, object, segments_container, segments_object_prefix) do
-    OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], [
+    case OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], [
       headers: [{"X-Object-Manifest", "#{segments_container}/#{segments_object_prefix}"}]
-    ])
+    ]) do
+      {:ok, code, headers, body} ->
+        {"Etag", etag} = List.keyfind(headers, "Etag", 0)
+
+        {:ok, %{ etag: etag }}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
   end
 end
