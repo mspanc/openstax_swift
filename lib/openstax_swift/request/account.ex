@@ -1,4 +1,4 @@
-defmodule Account do
+defmodule OpenStax.Swift.Request.Account do
   @moduledoc """
   This module is responsible for wrapping HTTP requests sent to Swift
   when it comes to account handling.

@@ -1,4 +1,4 @@
-defmodule Object do
+defmodule OpenStax.Swift.Request.Object do
   @moduledoc """
   This module is responsible for wrapping HTTP requests sent to Swift
   when it comes to object handling.
@@ -20,7 +20,7 @@ defmodule Object do
   Creates an object with data content and metadata, or replaces an existing
   object with data content and metadata.
 
-  See http://developer.openstack.org/api-ref-objectstorage-v1.html#showObject
+  See http://developer.openstack.org/api-ref-objectstorage-v1.html#createOrReplaceObject
   """
   def create(backend_id, container, object, body, metadata \\ nil) do
     OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], %{
