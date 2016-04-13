@@ -25,7 +25,7 @@ defmodule OpenStax.Swift.Request do
 
               _ ->
                 headers_full = @request_headers ++ [{"X-Auth-Token", auth_token}]
-                location_full = endpoint_url <> "/" <> String.join(path, "/")
+                location_full = endpoint_url <> "/" <> Enum.join(path, "/")
 
                 if options[:headers]  != nil, do: headers_full = headers_full ++ options[:headers]
                 if options[:metadata] != nil, do: headers_full = headers_full ++ options[:metadata] # FIXME prefix X-Meta-...
