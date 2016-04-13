@@ -11,9 +11,9 @@ defmodule OpenStax.Swift.API.Account do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#updateAccountMeta
   """
   def create(backend_id, metadata \\ nil) do
-    OpenStax.Swift.Request.request(backend_id, :post, [], [200], %{
+    OpenStax.Swift.Request.request(backend_id, :post, [], [200], []
       metadata: metadata
-    })
+    ]
   end
 
 

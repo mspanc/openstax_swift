@@ -8,7 +8,7 @@ defmodule OpenStax.Swift.Request do
   @request_options [timeout: @timeout, recv_timeout: @timeout, follow_redirect: false]
 
 
-  def request(backend_id, method, path, expected_status_codes, %{query: query, body: body, metadata: metadata, headers: headers} = options) do
+  def request(backend_id, method, path, expected_status_codes, options \\ []) do
     case OpenStax.Swift.AuthAgent.get_config(backend_id) do
       nil ->
         {:error, {:config, :invalid_backend}}
@@ -27,11 +27,11 @@ defmodule OpenStax.Swift.Request do
                 headers_full = @request_headers ++ [{"X-Auth-Token", auth_token}]
                 location_full = endpoint_url <> "/" <> String.join(path, "/")
 
-                if headers  != nil, do: headers_full = headers_full ++ headers
-                if metadata != nil, do: headers_full = headers_full ++ metadata # FIXME prefix X-Meta-...
-                if query    != nil, do: location_full = location_full <> "?" <> URI.encode_query(query)
+                if options[:headers]  != nil, do: headers_full = headers_full ++ options[:headers]
+                if options[:metadata] != nil, do: headers_full = headers_full ++ options[:metadata] # FIXME prefix X-Meta-...
+                if options[:query]    != nil, do: location_full = location_full <> "?" <> URI.encode_query(options[:query])
 
-                case HTTPoison.request(method, location_full, body, headers_full, @request_options) do
+                case HTTPoison.request(method, location_full, options[:body], headers_full, @request_options) do
                   {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
                     case status_code do
                       401 ->
