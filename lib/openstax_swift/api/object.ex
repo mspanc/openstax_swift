@@ -1,4 +1,4 @@
-defmodule OpenStax.Swift.Request.Object do
+defmodule OpenStax.Swift.API.Object do
   @moduledoc """
   This module is responsible for wrapping HTTP requests sent to Swift
   when it comes to object handling.

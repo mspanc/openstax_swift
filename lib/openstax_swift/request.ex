@@ -1,6 +1,4 @@
 defmodule OpenStax.Swift.Request do
-  require OpenStax.Swift
-
   @request_headers [
     {"Connection",    "Close"},
     {"Cache-Control", "no-cache, must-revalidate"},

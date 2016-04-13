@@ -1,4 +1,4 @@
-defmodule OpenStax.Swift.Request.Container do
+defmodule OpenStax.Swift.API.Container do
   @moduledoc """
   This module is responsible for wrapping HTTP OpenStax.Swift.Request.requests sent to Swift
   when it comes to container handling.
