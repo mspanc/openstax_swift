@@ -32,13 +32,13 @@ defmodule OpenStax.Swift.Request do
                 if options[:query]    != nil, do: location_full = location_full <> "?" <> URI.encode_query(options[:query])
 
                 case HTTPoison.request(method, location_full, options[:body], headers_full, @request_options) do
-                  {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
+                  {:ok, %HTTPoison.Response{status_code: status_code, body: body, headers: headers}} ->
                     case status_code do
                       401 ->
                         {:error, {:auth, :unauthorized}}
 
                       expected_status_code ->
-                        {:ok, status_code, body} # TODO parse body
+                        {:ok, status_code, headers, body}
 
                       _ ->
                         {:error, {:httpcode, status_code}}
