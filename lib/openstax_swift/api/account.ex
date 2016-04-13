@@ -13,7 +13,7 @@ defmodule OpenStax.Swift.API.Account do
   def create(backend_id, metadata \\ nil) do
     OpenStax.Swift.Request.request(backend_id, :post, [], [200], [
       metadata: metadata
-    ]
+    ])
   end
 
 

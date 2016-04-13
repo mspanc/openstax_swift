@@ -24,7 +24,7 @@ defmodule OpenStax.Swift.API.Container do
   def create(backend_id, container, metadata \\ nil) do
     OpenStax.Swift.Request.request(backend_id, :put, [container], [201], [
       metadata: metadata
-    ]
+    ])
   end
 
 
@@ -46,7 +46,7 @@ defmodule OpenStax.Swift.API.Container do
   def set_meta(backend_id, container, metadata \\ nil) do
     OpenStax.Swift.Request.request(backend_id, :post, [container], [204], [
       metadata: metadata
-    ]
+    ])
   end
 
 
