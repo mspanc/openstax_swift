@@ -36,7 +36,9 @@ defmodule OpenStax.Swift.Mixfile do
     [
       {:httpoison, "~> 0.8.2"},
       {:poison, "~> 1.3" },
-      {:espec, "~> 0.8.17", only: :test}
+      {:espec, "~> 0.8.17", only: :test},
+      {:ex_doc, "~> 0.11.4", only: :dev},
+      {:earmark, ">= 0.0.0", only: :dev}
     ]
   end
 
