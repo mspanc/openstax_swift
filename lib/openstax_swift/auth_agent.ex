@@ -14,9 +14,9 @@ defmodule OpenStax.Swift.AuthAgent do
   @doc """
   Registers new backend.
   """
-  def register(backend_id, auth_token \\ nil, endpoint_url \\ nil) do
+  def register(backend_id, auth_token \\ nil, endpoint_url \\ nil, signing_key \\ nil) do
     Agent.update(OpenStax.Swift.AuthAgent, fn(state) ->
-      Map.put(state, backend_id, %{auth_token: auth_token, endpoint_url: endpoint_url})
+      Map.put(state, backend_id, %{auth_token: auth_token, endpoint_url: endpoint_url, signing_key: signing_key})
     end)
   end
 
@@ -34,9 +34,9 @@ defmodule OpenStax.Swift.AuthAgent do
   @doc """
   Sets current configuration for a backend.
   """
-  def set_config(backend_id, auth_token, endpoint_url) do
+  def set_config(backend_id, auth_token, endpoint_url, signing_key \\ nil) do
     Agent.update(OpenStax.Swift.AuthAgent, fn(state) ->
-      Map.put(state, backend_id, %{auth_token: auth_token, endpoint_url: endpoint_url})
+      Map.put(state, backend_id, %{auth_token: auth_token, endpoint_url: endpoint_url, signing_key: signing_key})
     end)
   end
 end

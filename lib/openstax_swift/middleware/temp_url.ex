@@ -11,12 +11,12 @@ defmodule OpenStax.Swift.Middleware.TempURL do
 
   You must set keys as a metadata of container prior to generating such URL.
   """
-  def generate(backend_id, container, object, key, expires_in) do
+  def generate(backend_id, container, object, expires_in) do
     case OpenStax.Swift.AuthAgent.get_config(backend_id) do
       nil ->
         {:error, {:config, :invalid_backend}}
 
-      %{auth_token: auth_token, endpoint_url: endpoint_url} ->
+      %{signing_key: signing_key, endpoint_url: endpoint_url} ->
         case endpoint_url do
           nil ->
             {:error, {:auth, :invalid_endpoint}}
@@ -29,7 +29,7 @@ defmodule OpenStax.Swift.Middleware.TempURL do
             unix_timestamp_now = mega * 1000000 + sec
 
             temp_url_expires = unix_timestamp_now + expires_in
-            temp_url_sig = Base.encode16(:crypto.hmac(:sha, key, "GET\n" <> to_string(temp_url_expires) <> "\n" <> path), case: :lower)
+            temp_url_sig = Base.encode16(:crypto.hmac(:sha, signing_key, "GET\n" <> to_string(temp_url_expires) <> "\n" <> path), case: :lower)
 
             endpoint_url <> "/" <> container <> "/" <> object <> "?" <>
               URI.encode_query(%{
