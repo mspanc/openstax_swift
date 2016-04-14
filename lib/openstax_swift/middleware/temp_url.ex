@@ -31,7 +31,7 @@ defmodule OpenStax.Swift.Middleware.TempURL do
             temp_url_expires = unix_timestamp_now + expires_in
             temp_url_sig = Base.encode16(:crypto.hmac(:sha, signing_key, "GET\n" <> to_string(temp_url_expires) <> "\n" <> path), case: :lower)
 
-            endpoint_url <> "/" <> container <> "/" <> object <> "?" <>
+            endpoint_url <> "/" <> to_string(container) <> "/" <> to_string(object) <> "?" <>
               URI.encode_query(%{
                 temp_url_expires: temp_url_expires,
                 temp_url_sig: temp_url_sig
