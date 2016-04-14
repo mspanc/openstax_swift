@@ -23,7 +23,7 @@ defmodule OpenStax.Swift.Middleware.TempURL do
 
           _ ->
             %URI{path: endpoint_path} = URI.parse(endpoint_url)
-            path = endpoint_path <> "/" <> container <> "/" <> object
+            path = endpoint_path <> "/" <> to_string(container) <> "/" <> to_string(object)
 
             {mega, sec, _} = :os.timestamp
             unix_timestamp_now = mega * 1000000 + sec
