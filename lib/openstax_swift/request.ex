@@ -8,10 +8,10 @@ defmodule OpenStax.Swift.Request do
   @request_options [timeout: @timeout, recv_timeout: @timeout, follow_redirect: false]
 
 
-  def request(backend_id, method, path, expected_status_codes, options \\ []) do
-    case OpenStax.Swift.AuthAgent.get_config(backend_id) do
+  def request(endpoint_id, method, path, expected_status_codes, options \\ []) do
+    case OpenStax.Swift.Endpoint.get_config(endpoint_id) do
       nil ->
-        {:error, {:config, :invalid_backend}}
+        {:error, {:config, :invalid_endpoint}}
 
       %{auth_token: auth_token, endpoint_url: endpoint_url} ->
         case endpoint_url do

@@ -10,8 +10,8 @@ defmodule OpenStax.Swift.API.Object do
 
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#showObject
   """
-  def read(backend_id, container, object) do
-    OpenStax.Swift.Request.request(backend_id, :get, [container, object], [200])
+  def read(endpoint_id, container, object) do
+    OpenStax.Swift.Request.request(endpoint_id, :get, [container, object], [200])
     # TODO parse content
   end
 
@@ -26,8 +26,8 @@ defmodule OpenStax.Swift.API.Object do
 
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#createOrReplaceObject
   """
-  def create(backend_id, container, object, body, metadata \\ nil) do
-    case OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], [ body: body, metadata: metadata ]) do
+  def create(endpoint_id, container, object, body, metadata \\ nil) do
+    case OpenStax.Swift.Request.request(endpoint_id, :put, [container, object], [201], [ body: body, metadata: metadata ]) do
       {:ok, code, headers, body} ->
         {"Etag", etag} = List.keyfind(headers, "Etag", 0)
 
@@ -44,11 +44,11 @@ defmodule OpenStax.Swift.API.Object do
 
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#copyObject
   """
-  def copy(backend_id, source_container, source_object, destination_container, destination_object, copy_manifest \\ false) do
+  def copy(endpoint_id, source_container, source_object, destination_container, destination_object, copy_manifest \\ false) do
     query = nil
     if copy_manifest, do: query = %{"multipart-manifest" => "copy"}
 
-    OpenStax.Swift.Request.request(backend_id, :copy, [source_container, source_object], [201], [
+    OpenStax.Swift.Request.request(endpoint_id, :copy, [source_container, source_object], [201], [
       headers: [{"Destination", "#{destination_container}/#{destination_object}"}],
       query: query
     ])
@@ -60,11 +60,11 @@ defmodule OpenStax.Swift.API.Object do
 
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#deleteObject
   """
-  def delete(backend_id, container, object, delete_manifest \\ false) do
+  def delete(endpoint_id, container, object, delete_manifest \\ false) do
     query = nil
     if delete_manifest, do: query = %{"multipart-manifest" => "delete"}
 
-    OpenStax.Swift.Request.request(backend_id, :delete, [container, object], [204], [
+    OpenStax.Swift.Request.request(endpoint_id, :delete, [container, object], [204], [
       query: query
     ])
   end
@@ -75,8 +75,8 @@ defmodule OpenStax.Swift.API.Object do
 
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#showObjectMeta
   """
-  def get_meta(backend_id, container, object) do
-    OpenStax.Swift.Request.request(backend_id, :head, [container, object], [200])
+  def get_meta(endpoint_id, container, object) do
+    OpenStax.Swift.Request.request(endpoint_id, :head, [container, object], [200])
     # TODO parse response
   end
 
@@ -86,8 +86,8 @@ defmodule OpenStax.Swift.API.Object do
 
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#updateObjectMeta
   """
-  def set_meta(backend_id, container, object, metadata \\ nil) do
-    OpenStax.Swift.Request.request(backend_id, :post, [container, object], [202], [
+  def set_meta(endpoint_id, container, object, metadata \\ nil) do
+    OpenStax.Swift.Request.request(endpoint_id, :post, [container, object], [202], [
       metadata: metadata
     ])
   end
@@ -101,8 +101,8 @@ defmodule OpenStax.Swift.API.Object do
 
   See http://docs.openstack.org/developer/swift/api/large_objects.html#static-large-objects
   """
-  def create_slo_manifest(backend_id, container, object, segments, metadata \\ nil) do
-    OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], [
+  def create_slo_manifest(endpoint_id, container, object, segments, metadata \\ nil) do
+    OpenStax.Swift.Request.request(endpoint_id, :put, [container, object], [201], [
       body: Poison.encode!(Enum.map(segments, fn({path, etag, size_bytes}) -> %{path: path, etag: etag, size_bytes: size_bytes} end)),
       metadata: metadata,
       query: %{"multipart-manifest" => "put"}
@@ -115,8 +115,8 @@ defmodule OpenStax.Swift.API.Object do
 
   See http://docs.openstack.org/developer/swift/api/large_objects.html#dynamic-large-objects
   """
-  def create_dlo_manifest(backend_id, container, object, segments_container, segments_object_prefix) do
-    case OpenStax.Swift.Request.request(backend_id, :put, [container, object], [201], [
+  def create_dlo_manifest(endpoint_id, container, object, segments_container, segments_object_prefix) do
+    case OpenStax.Swift.Request.request(endpoint_id, :put, [container, object], [201], [
       headers: [{"X-Object-Manifest", "#{segments_container}/#{segments_object_prefix}"}]
     ]) do
       {:ok, code, headers, body} ->

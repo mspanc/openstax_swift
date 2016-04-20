@@ -11,10 +11,10 @@ defmodule OpenStax.Swift.Middleware.TempURL do
 
   You must set keys as a metadata of container prior to generating such URL.
   """
-  def generate(backend_id, container, object, expires_in) do
-    case OpenStax.Swift.AuthAgent.get_config(backend_id) do
+  def generate(endpoint_id, container, object, expires_in) do
+    case OpenStax.Swift.Endpoint.get_config(endpoint_id) do
       nil ->
-        {:error, {:config, :invalid_backend}}
+        {:error, {:config, :invalid_endpoint}}
 
       %{signing_key: signing_key, endpoint_url: endpoint_url} ->
         case endpoint_url do

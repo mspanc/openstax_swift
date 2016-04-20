@@ -11,7 +11,7 @@ defmodule OpenStax.Swift do
     import Supervisor.Spec, warn: false
 
     children = [
-      worker(OpenStax.Swift.AuthAgent, [[name: OpenStax.Swift.AuthAgent]])
+      worker(OpenStax.Swift.Endpoint, [[name: OpenStax.Swift.Endpoint]])
     ]
 
     opts = [strategy: :one_for_one, name: OpenStax.Swift]

@@ -10,8 +10,8 @@ defmodule OpenStax.Swift.API.Container do
 
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#showContainerDetails
   """
-  def read(backend_id, container) do
-    OpenStax.Swift.Request.request(backend_id, :get, [container], [200, 204])
+  def read(endpoint_id, container) do
+    OpenStax.Swift.Request.request(endpoint_id, :get, [container], [200, 204])
     # TODO parse response
   end
 
@@ -21,8 +21,8 @@ defmodule OpenStax.Swift.API.Container do
 
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#createContainer
   """
-  def create(backend_id, container, metadata \\ nil) do
-    OpenStax.Swift.Request.request(backend_id, :put, [container], [201], [
+  def create(endpoint_id, container, metadata \\ nil) do
+    OpenStax.Swift.Request.request(endpoint_id, :put, [container], [201], [
       metadata: metadata
     ])
   end
@@ -33,8 +33,8 @@ defmodule OpenStax.Swift.API.Container do
 
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#deleteContainer
   """
-  def delete(backend_id, container) do
-    OpenStax.Swift.Request.request(backend_id, :delete, [container], [204])
+  def delete(endpoint_id, container) do
+    OpenStax.Swift.Request.request(endpoint_id, :delete, [container], [204])
   end
 
 
@@ -43,8 +43,8 @@ defmodule OpenStax.Swift.API.Container do
 
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#updateContainerMeta
   """
-  def set_meta(backend_id, container, metadata \\ nil) do
-    OpenStax.Swift.Request.request(backend_id, :post, [container], [204], [
+  def set_meta(endpoint_id, container, metadata \\ nil) do
+    OpenStax.Swift.Request.request(endpoint_id, :post, [container], [204], [
       metadata: metadata
     ])
   end
@@ -56,8 +56,8 @@ defmodule OpenStax.Swift.API.Container do
 
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#showContainerMeta
   """
-  def get_meta(backend_id, container) do
-    OpenStax.Swift.Request.request(backend_id, :head, [container], [204])
+  def get_meta(endpoint_id, container) do
+    OpenStax.Swift.Request.request(endpoint_id, :head, [container], [204])
     # TODO parse response
   end
 end
