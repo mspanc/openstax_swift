@@ -1,6 +1,6 @@
 defmodule OpenStax.Swift.Endpoint do
   @moduledoc """
-    This module is responsible for storing configuration of Swift endpoints.
+  This module is responsible for storing configuration of Swift endpoints.
   """
 
   @doc """
@@ -26,7 +26,13 @@ defmodule OpenStax.Swift.Endpoint do
   """
   def get_config(endpoint_id) do
     Agent.get(OpenStax.Swift.Endpoint, fn(state) ->
-      Map.get(state, endpoint_id)
+      auth_token = Map.get(state, endpoint_id)
+
+      if is_function(auth_token) do
+        apply(auth_token, [])
+      else
+        auth_token
+      end
     end)
   end
 
