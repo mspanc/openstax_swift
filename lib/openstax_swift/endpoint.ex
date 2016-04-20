@@ -26,13 +26,7 @@ defmodule OpenStax.Swift.Endpoint do
   """
   def get_config(endpoint_id) do
     Agent.get(OpenStax.Swift.Endpoint, fn(state) ->
-      auth_token = Map.get(state, endpoint_id)
-
-      if is_function(auth_token) do
-        apply(auth_token, [])
-      else
-        auth_token
-      end
+      Map.get(state, endpoint_id)
     end)
   end
 
