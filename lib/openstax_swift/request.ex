@@ -12,17 +12,17 @@ defmodule OpenStax.Swift.Request do
   @logger_tag "OpenStax.Swift.Request"
 
 
-  def request(endpoint_id, method, path, expected_status_codes, options \\ []) do
-    Logger.info "[#{@logger_tag} #{inspect(endpoint_id)}] Requesting #{String.upcase(to_string(method))} #{path} (expected status codes = #{expected_status_codes}..."
+  def request(endpoint_id, method, path, expected_status_codes, options \\ []) when is_list(path) do
+    Logger.info "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Requesting #{String.upcase(to_string(method))} #{inspect(path)} (expected status codes = #{inspect(expected_status_codes)})..."
     case OpenStax.Swift.Endpoint.get_config(endpoint_id) do
       nil ->
-        Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)}] Unknown endpoint"
+        Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Unknown endpoint"
         {:error, {:config, :invalid_endpoint}}
 
       %{auth_token: auth_token, endpoint_url: endpoint_url} ->
         case endpoint_url do
           nil ->
-            Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)}] Unable to make request: please set endpoint URL"
+            Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Unable to make request: please set endpoint URL"
             {:error, {:auth, :invalid_endpoint}}
 
           _ ->
@@ -38,7 +38,7 @@ defmodule OpenStax.Swift.Request do
 
             case auth_token_full do
               nil ->
-                Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)}] Unable to make request: please set auth token"
+                Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Unable to make request: please set auth token"
                 {:error, {:auth, :unauthorized}}
 
               _ ->
@@ -57,29 +57,27 @@ defmodule OpenStax.Swift.Request do
                     options[:body]
                 end
 
-
-                Logger.info "[#{@logger_tag} #{inspect(endpoint_id)}] Requesting: method = #{inspect(method)}, location = #{inspect(location_full)}, body = (...) #{byte_size(body_full)} bytes, headers = #{inspect(headers_full)}"
                 case HTTPoison.request(method, location_full, body_full, headers_full, @request_options) do
                   {:ok, %HTTPoison.Response{status_code: status_code, body: body, headers: headers}} ->
                     cond do
                       Enum.any?(expected_status_codes, fn(expected_code) -> expected_code == status_code end) ->
-                        Logger.info "[#{@logger_tag} #{inspect(endpoint_id)}] Request OK: got status code of #{status_code}"
+                        Logger.info "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Request OK: got status code of #{status_code}"
                         {:ok, status_code, headers, body}
 
                       true ->
                         case status_code do
                           401 ->
-                            Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)}] Request failed: unauthorized"
+                            Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Request failed: unauthorized"
                             {:error, {:auth, :unauthorized}}
 
                           _ ->
-                            Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)}] Request failed: got unexpected status code of #{status_code}"
+                            Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Request failed: got unexpected status code of #{status_code}"
                             {:error, {:httpcode, status_code}}
                         end
                     end
 
                   {:error, reason} ->
-                    Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)}] Request failed: HTTP error #{inspect(reason)}"
+                    Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Request failed: HTTP error #{inspect(reason)}"
                     {:error, {:httperror, reason}}
                 end
             end
