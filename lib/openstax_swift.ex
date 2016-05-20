@@ -3,7 +3,7 @@ defmodule OpenStax.Swift do
 
 
   def version do
-    "0.1.2"
+    "0.1.3"
   end
 
 
