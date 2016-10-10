@@ -38,7 +38,7 @@ defmodule OpenStax.Swift.API.Object do
     end
 
     case OpenStax.Swift.Request.request(endpoint_id, :put, [to_string(container), to_string(object)], [201], [ body: body, headers: headers, metadata: metadata ]) do
-      {:ok, code, headers, body} ->
+      {:ok, _code, headers, _body} ->
         {"Etag", etag} = List.keyfind(headers, "Etag", 0)
 
         {:ok, %{ etag: etag }}
@@ -55,8 +55,12 @@ defmodule OpenStax.Swift.API.Object do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#copyObject
   """
   def copy(endpoint_id, source_container, source_object, destination_container, destination_object, copy_manifest \\ false) do
-    query = nil
-    if copy_manifest, do: query = %{"multipart-manifest" => "copy"}
+    query = cond do
+      copy_manifest == true ->
+        %{"multipart-manifest" => "copy"}
+      true ->
+        nil
+    end
 
     OpenStax.Swift.Request.request(endpoint_id, :copy, [to_string(source_container), to_string(source_object)], [201], [
       headers: [{"Destination", "#{destination_container}/#{destination_object}"}],
@@ -71,8 +75,12 @@ defmodule OpenStax.Swift.API.Object do
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#deleteObject
   """
   def delete(endpoint_id, container, object, delete_manifest \\ false) do
-    query = nil
-    if delete_manifest, do: query = %{"multipart-manifest" => "delete"}
+    query = cond do
+      delete_manifest == true ->
+        %{"multipart-manifest" => "delete"}
+      true ->
+        nil
+    end
 
     OpenStax.Swift.Request.request(endpoint_id, :delete, [to_string(container), to_string(object)], [204], [
       query: query
@@ -138,7 +146,7 @@ defmodule OpenStax.Swift.API.Object do
     end
 
     case OpenStax.Swift.Request.request(endpoint_id, :put, [to_string(container), to_string(object)], [201], [headers: headers, metadata: metadata]) do
-      {:ok, code, headers, body} ->
+      {:ok, _code, headers, _body} ->
         {"Etag", etag} = List.keyfind(headers, "Etag", 0)
 
         {:ok, %{ etag: etag }}
