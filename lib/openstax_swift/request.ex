@@ -50,11 +50,9 @@ defmodule OpenStax.Swift.Request do
                 if options[:query]    != nil, do: location_full = location_full <> "?" <> URI.encode_query(options[:query])
 
                 body_full = case options[:body] do
-                  nil ->
-                    ""
-
-                  _ ->
-                    options[:body]
+                  nil           ->  ""
+                  {:file, path} -> {:file, path}
+                  _             -> options[:body]
                 end
 
                 case HTTPoison.request(method, location_full, body_full, headers_full, @request_options) do

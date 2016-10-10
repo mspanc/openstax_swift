@@ -20,6 +20,8 @@ defmodule OpenStax.Swift.API.Object do
   Creates an object with data content and metadata, or replaces an existing
   object with data content and metadata.
 
+  Body can be either string or `{:file, path_to_the_file}`.
+
   On success it returns `{:ok, %{etag: "md5 hash of contents"}}`.
 
   On error it returns `{:error, reason}`.
