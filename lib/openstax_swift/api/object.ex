@@ -26,8 +26,18 @@ defmodule OpenStax.Swift.API.Object do
 
   See http://developer.openstack.org/api-ref-objectstorage-v1.html#createOrReplaceObject
   """
-  def create(endpoint_id, container, object, body, metadata \\ nil) do
-    case OpenStax.Swift.Request.request(endpoint_id, :put, [to_string(container), to_string(object)], [201], [ body: body, metadata: metadata ]) do
+  def create(endpoint_id, container, object, body, content_type \\ "application/octet-stream", content_disposition \\ "attachment", filename \\ nil, metadata \\ nil) do
+    headers = [
+      {"Content-Type", content_type}
+    ]
+    headers = cond do
+      !is_nil(filename) ->
+        headers ++ [{"Content-Disposition", "#{content_disposition}; filename=\"#{String.replace(filename, "\"", "")}\""}]
+      true ->
+        headers
+    end
+
+    case OpenStax.Swift.Request.request(endpoint_id, :put, [to_string(container), to_string(object)], [201], [ body: body, headers: headers, metadata: metadata ]) do
       {:ok, code, headers, body} ->
         {"Etag", etag} = List.keyfind(headers, "Etag", 0)
 
@@ -115,16 +125,19 @@ defmodule OpenStax.Swift.API.Object do
 
   See http://docs.openstack.org/developer/swift/api/large_objects.html#dynamic-large-objects
   """
-  def create_dlo_manifest(endpoint_id, container, object, segments_container, segments_object_prefix, content_type \\ "application/octet-stream", content_disposition \\ "attachment", filename \\ nil) do
+  def create_dlo_manifest(endpoint_id, container, object, segments_container, segments_object_prefix, content_type \\ "application/octet-stream", content_disposition \\ "attachment", filename \\ nil, metadata \\ nil) do
     headers = [
       {"X-Object-Manifest", "#{segments_container}/#{segments_object_prefix}"},
       {"Content-Type", content_type}
     ]
-    if !is_nil(filename) do
-      headers = headers ++ [{"Content-Disposition", "#{content_disposition}; filename=\"#{String.replace(filename, "\"", "")}\""}]
+    headers = cond do
+      !is_nil(filename) ->
+        headers ++ [{"Content-Disposition", "#{content_disposition}; filename=\"#{String.replace(filename, "\"", "")}\""}]
+      true ->
+        headers
     end
 
-    case OpenStax.Swift.Request.request(endpoint_id, :put, [to_string(container), to_string(object)], [201], [headers: headers]) do
+    case OpenStax.Swift.Request.request(endpoint_id, :put, [to_string(container), to_string(object)], [201], [headers: headers, metadata: metadata]) do
       {:ok, code, headers, body} ->
         {"Etag", etag} = List.keyfind(headers, "Etag", 0)
 
