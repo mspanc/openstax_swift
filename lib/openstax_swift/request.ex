@@ -13,7 +13,7 @@ defmodule OpenStax.Swift.Request do
 
 
   def request(endpoint_id, method, path, expected_status_codes, options \\ []) when is_list(path) do
-    Logger.info "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Requesting #{String.upcase(to_string(method))} #{inspect(path)} (expected status codes = #{inspect(expected_status_codes)})..."
+    Logger.debug "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Requesting #{String.upcase(to_string(method))} #{inspect(path)} with options #{inspect(options)} (expected status codes = #{inspect(expected_status_codes)})..."
     case OpenStax.Swift.Endpoint.get_config(endpoint_id) do
       nil ->
         Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Unknown endpoint"
