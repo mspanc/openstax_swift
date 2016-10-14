@@ -45,9 +45,9 @@ defmodule OpenStax.Swift.Request do
                 headers_full = @request_headers ++ [{"X-Auth-Token", auth_token_full}]
                 location_full = endpoint_url <> "/" <> Enum.join(path, "/")
 
-                if options[:headers]  != nil, do: headers_full = headers_full ++ options[:headers]
-                if options[:metadata] != nil, do: headers_full = headers_full ++ options[:metadata] # FIXME prefix X-Meta-...
-                if options[:query]    != nil, do: location_full = location_full <> "?" <> URI.encode_query(options[:query])
+                headers_full  = if options[:headers]  != nil, do: headers_full ++ options[:headers], else: headers_full
+                headers_full  = if options[:metadata] != nil, do: headers_full ++ options[:metadata], else: headers_full # FIXME prefix X-Meta-...
+                location_full = if options[:query]    != nil, do: location_full <> "?" <> URI.encode_query(options[:query]), else: location_full
 
                 body_full = case options[:body] do
                   nil           ->  ""
