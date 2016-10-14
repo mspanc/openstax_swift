@@ -59,23 +59,23 @@ defmodule OpenStax.Swift.Request do
                   {:ok, %HTTPoison.Response{status_code: status_code, body: body, headers: headers}} ->
                     cond do
                       Enum.any?(expected_status_codes, fn(expected_code) -> expected_code == status_code end) ->
-                        Logger.info "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Request OK: got status code of #{status_code}"
+                        Logger.debug "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Request to #{String.upcase(to_string(method))} #{inspect(path)} OK: got status code of #{status_code}"
                         {:ok, status_code, headers, body}
 
                       true ->
                         case status_code do
                           401 ->
-                            Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Request failed: unauthorized"
+                            Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Request to #{String.upcase(to_string(method))} #{inspect(path)} failed: unauthorized"
                             {:error, {:auth, :unauthorized}}
 
                           _ ->
-                            Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Request failed: got unexpected status code of #{status_code}"
+                            Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Request to #{String.upcase(to_string(method))} #{inspect(path)} failed: got unexpected status code of #{status_code}"
                             {:error, {:httpcode, status_code}}
                         end
                     end
 
                   {:error, reason} ->
-                    Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Request failed: HTTP error #{inspect(reason)}"
+                    Logger.warn "[#{@logger_tag} #{inspect(endpoint_id)} #{inspect(self())}] Request to #{String.upcase(to_string(method))} #{inspect(path)} failed: HTTP error #{inspect(reason)}"
                     {:error, {:httperror, reason}}
                 end
             end
