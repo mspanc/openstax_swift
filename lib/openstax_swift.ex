@@ -2,7 +2,7 @@ defmodule OpenStax.Swift do
   use Application
 
   def version do
-    "0.2.0"
+    "0.2.1"
   end
 
 

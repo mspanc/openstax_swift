@@ -3,7 +3,7 @@ defmodule OpenStax.Swift.Mixfile do
 
   def project do
     [app: :openstax_swift,
-     version: "0.2.0",
+     version: "0.2.1",
      elixir: "~> 1.0",
      elixirc_paths: elixirc_paths(Mix.env),
      description: "OpenStack Swift client",
@@ -35,7 +35,7 @@ defmodule OpenStax.Swift.Mixfile do
   defp deps(:test_dev) do
     [
       {:httpoison, "~> 0.8.2"},
-      {:poison, "~> 1.3" },
+      {:poison, "~> 2.0" },
       {:espec, "~> 0.8.17", only: :test},
       {:ex_doc, "~> 0.11.4", only: :dev},
       {:earmark, ">= 0.0.0", only: :dev}
