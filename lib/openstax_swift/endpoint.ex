@@ -14,15 +14,15 @@ defmodule OpenStax.Swift.Endpoint do
   @doc """
   Registers new endpoint.
   """
-  def register(endpoint_id, auth_token \\ nil, endpoint_url \\ nil, signing_key \\ nil) do
+  def register(endpoint_id, auth_token \\ nil, endpoint_url \\ nil, signing_key \\ nil, public_url \\ nil) do
     Agent.update(OpenStax.Swift.Endpoint, fn(state) ->
-      Map.put(state, endpoint_id, %{auth_token: auth_token, endpoint_url: endpoint_url, signing_key: signing_key})
+      Map.put(state, endpoint_id, %{auth_token: auth_token, endpoint_url: endpoint_url, signing_key: signing_key, public_url: public_url})
     end)
   end
 
 
   @doc """
-  Returns current access token for a endpoint.
+  Returns current configuration for an endpoint.
   """
   def get_config(endpoint_id) do
     Agent.get(OpenStax.Swift.Endpoint, fn(state) ->
@@ -32,11 +32,21 @@ defmodule OpenStax.Swift.Endpoint do
 
 
   @doc """
-  Sets current configuration for a endpoint.
+  Returns current auth token for an endpoint.
   """
-  def set_config(endpoint_id, auth_token, endpoint_url, signing_key \\ nil) do
+  def get_auth_token(endpoint_id) do
+    Agent.get(OpenStax.Swift.Endpoint, fn(state) ->
+      Map.get(state, endpoint_id)[:auth_token]
+    end) |> Kernel.apply([])
+  end
+
+
+  @doc """
+  Sets current configuration for an endpoint.
+  """
+  def set_config(endpoint_id, auth_token, endpoint_url, signing_key \\ nil, public_url \\ nil) do
     Agent.update(OpenStax.Swift.Endpoint, fn(state) ->
-      Map.put(state, endpoint_id, %{auth_token: auth_token, endpoint_url: endpoint_url, signing_key: signing_key})
+      Map.put(state, endpoint_id, %{auth_token: auth_token, endpoint_url: endpoint_url, signing_key: signing_key, public_url: public_url})
     end)
   end
 end

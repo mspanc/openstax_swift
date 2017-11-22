@@ -3,7 +3,6 @@ defmodule OpenStax.Swift.Request do
 
 
   @request_headers [
-    {"Connection",    "Close"},
     {"Cache-Control", "no-cache, must-revalidate"},
     {"User-Agent",    "OpenStax.Swift/#{OpenStax.Swift.version}"}
   ]

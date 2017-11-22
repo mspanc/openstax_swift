@@ -16,7 +16,7 @@ defmodule OpenStax.Swift.Middleware.TempURL do
       nil ->
         {:error, {:config, :invalid_endpoint}}
 
-      %{signing_key: signing_key, endpoint_url: endpoint_url} ->
+      %{signing_key: signing_key, endpoint_url: endpoint_url, public_url: public_url} ->
         case endpoint_url do
           nil ->
             {:error, {:auth, :invalid_endpoint}}
@@ -31,7 +31,15 @@ defmodule OpenStax.Swift.Middleware.TempURL do
             temp_url_expires = unix_timestamp_now + expires_in
             temp_url_sig = Base.encode16(:crypto.hmac(:sha, signing_key, "GET\n" <> to_string(temp_url_expires) <> "\n" <> path), case: :lower)
 
-            endpoint_url <> "/" <> to_string(container) <> "/" <> to_string(object) <> "?" <>
+            base_url = case public_url do
+              nil ->
+                endpoint_url
+
+              _ ->
+                public_url
+            end
+
+            base_url <> "/" <> to_string(container) <> "/" <> to_string(object) <> "?" <>
               URI.encode_query(%{
                 temp_url_expires: temp_url_expires,
                 temp_url_sig: temp_url_sig
